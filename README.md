@@ -1,6 +1,6 @@
 # Super Locomotive arcade core
 
-Developed by [ika-musume](https://github.com/ika-musume) aka [Raki](https://www.patreon.com/ikamusume)
+Core developed by [ika-musume](https://github.com/ika-musume) aka [Raki](https://www.patreon.com/ikamusume)
 
 Super Locomotive is a side-scrolling train action video game developed by Sega and released for arcades in 1982.
 
