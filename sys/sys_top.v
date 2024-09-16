@@ -124,20 +124,21 @@ module sys_top
 	//inout   [6:0] USER_IO
 );
 
+
 ///////////////////////// Senhor: Initializations ////////////////////////
 
-reg [5:0] VGA_R;
-reg [5:0] VGA_G;
-reg [5:0] VGA_B;
+wire [5:0] VGA_R;
+wire [5:0] VGA_G;
+wire [5:0] VGA_B;
 wire VGA_HS;
 wire VGA_VS;
 wire VGA_EN;
 
-always @(* ) begin
-  VGA_R = 6'b000000;
-  VGA_G = 6'b000000;
-  VGA_B = 6'b000000;
-end
+//always @(* ) begin
+//  VGA_R = 6'b000000;
+//  VGA_G = 6'b000000;
+//  VGA_B = 6'b000000;
+//end
 
 wire [3:0] SDIO_DAT;
 wire SDIO_CMD;
@@ -149,22 +150,22 @@ wire BTN_RESET, BTN_OSD, BTN_USER;
 /////////////////////////////////////////////////////////////////////////
 
 //////////////////////  Secondary SD  ///////////////////////////////////
-//wire SD_CS, SD_CLK, SD_MOSI, SD_MISO, SD_CD;
-//
-//`ifndef MISTER_DUAL_SDRAM
-//	assign SD_CD       = mcp_en ? mcp_sdcd : SDCD_SPDIF;
-//	assign SD_MISO     = SD_CD | (mcp_en ? SD_SPI_MISO : (VGA_EN | SDIO_DAT[0]));
-//	assign SD_SPI_CS   = mcp_en ?  (mcp_sdcd  ? 1'bZ : SD_CS) : (sog & ~cs1 & ~VGA_EN) ? 1'b1 : 1'bZ;
-//	assign SD_SPI_CLK  = (~mcp_en | mcp_sdcd) ? 1'bZ : SD_CLK;
-//	assign SD_SPI_MOSI = (~mcp_en | mcp_sdcd) ? 1'bZ : SD_MOSI;
-//	assign {SDIO_CLK,SDIO_CMD,SDIO_DAT} = av_dis ? 6'bZZZZZZ : (mcp_en | (SDCD_SPDIF & ~SW[2])) ? {vga_g,vga_r,vga_b} : {SD_CLK,SD_MOSI,SD_CS,3'bZZZ};
-//`else
-//	assign SD_CD       = mcp_sdcd;
-//	assign SD_MISO     = mcp_sdcd | SD_SPI_MISO;
-//	assign SD_SPI_CS   = mcp_sdcd ? 1'bZ : SD_CS;
-//	assign SD_SPI_CLK  = mcp_sdcd ? 1'bZ : SD_CLK;
-//	assign SD_SPI_MOSI = mcp_sdcd ? 1'bZ : SD_MOSI;
-//`endif
+wire SD_CS, SD_CLK, SD_MOSI, SD_MISO, SD_CD;
+
+`ifndef MISTER_DUAL_SDRAM
+	assign SD_CD       = mcp_en ? mcp_sdcd : SDCD_SPDIF;
+	assign SD_MISO     = SD_CD | (mcp_en ? SD_SPI_MISO : (VGA_EN | SDIO_DAT[0]));
+	assign SD_SPI_CS   = mcp_en ?  (mcp_sdcd  ? 1'bZ : SD_CS) : (sog & ~cs1 & ~VGA_EN) ? 1'b1 : 1'bZ;
+	assign SD_SPI_CLK  = (~mcp_en | mcp_sdcd) ? 1'bZ : SD_CLK;
+	assign SD_SPI_MOSI = (~mcp_en | mcp_sdcd) ? 1'bZ : SD_MOSI;
+	assign {SDIO_CLK,SDIO_CMD,SDIO_DAT} = av_dis ? 6'bZZZZZZ : (mcp_en | (SDCD_SPDIF & ~SW[2])) ? {vga_g,vga_r,vga_b} : {SD_CLK,SD_MOSI,SD_CS,3'bZZZ};
+`else
+	assign SD_CD       = mcp_sdcd;
+	assign SD_MISO     = mcp_sdcd | SD_SPI_MISO;
+	assign SD_SPI_CS   = mcp_sdcd ? 1'bZ : SD_CS;
+	assign SD_SPI_CLK  = mcp_sdcd ? 1'bZ : SD_CLK;
+	assign SD_SPI_MOSI = mcp_sdcd ? 1'bZ : SD_MOSI;
+`endif
 
 //////////////////////  LEDs/Buttons  ///////////////////////////////////
 
@@ -1497,9 +1498,9 @@ csync csync_vga(clk_vid, vga_hs_osd, vga_vs_osd, vga_cs_osd);
 
 	assign VGA_VS = av_dis ? 1'bZ      : ((vgas_en ? (~vgas_vs ^ VS[12])                         : VGA_DISABLE ? 1'd1 : ~vga_vs) | csync_en);
 	assign VGA_HS = av_dis ? 1'bZ      :  (vgas_en ? ((csync_en ? ~vgas_cs : ~vgas_hs) ^ HS[12]) : VGA_DISABLE ? 1'd1 : (csync_en ? ~vga_cs : ~vga_hs));
-	//assign VGA_R  = av_dis ? 6'bZZZZZZ :   vgas_en ? vgas_o[23:18]                               : VGA_DISABLE ? 6'd0 : vga_o[23:18];
-	//assign VGA_G  = av_dis ? 6'bZZZZZZ :   vgas_en ? vgas_o[15:10]                               : VGA_DISABLE ? 6'd0 : vga_o[15:10];
-	//assign VGA_B  = av_dis ? 6'bZZZZZZ :   vgas_en ? vgas_o[7:2]                                 : VGA_DISABLE ? 6'd0 : vga_o[7:2]  ;
+	assign VGA_R  = av_dis ? 6'bZZZZZZ :   vgas_en ? vgas_o[23:18]                               : VGA_DISABLE ? 6'd0 : vga_o[23:18];
+	assign VGA_G  = av_dis ? 6'bZZZZZZ :   vgas_en ? vgas_o[15:10]                               : VGA_DISABLE ? 6'd0 : vga_o[15:10];
+	assign VGA_B  = av_dis ? 6'bZZZZZZ :   vgas_en ? vgas_o[7:2]                                 : VGA_DISABLE ? 6'd0 : vga_o[7:2]  ;
 
 	wire [1:0] vga_r  = vgas_en ? vgas_o[17:16] : VGA_DISABLE ? 2'd0 : vga_o[17:16];
 	wire [1:0] vga_g  = vgas_en ? vgas_o[9:8]   : VGA_DISABLE ? 2'd0 : vga_o[9:8];
@@ -1543,7 +1544,7 @@ assign SDCD_SPDIF = (mcp_en & ~spdif) ? 1'b0 : 1'bZ;
 	assign AUDIO_L     = av_dis ? 1'bZ : (SW[0] | mcp_en) ? HDMI_SCLK  : analog_l;
 `endif
 
-assign HDMI_MCLK = 1'b0;
+assign HDMI_MCLK = clk_audio;
 wire clk_audio;
 
 pll_audio pll_audio
@@ -1634,21 +1635,21 @@ audio_out audio_out
 
 ////////////////  User I/O (USB 3.0 connector) /////////////////////////
 
-//assign USER_IO[0] =                       !user_out[0]  ? 1'b0 : 1'bZ;
-//assign USER_IO[1] =                       !user_out[1]  ? 1'b0 : 1'bZ;
-//assign USER_IO[2] = !(SW[1] ? HDMI_I2S   : user_out[2]) ? 1'b0 : 1'bZ;
-//assign USER_IO[3] =                       !user_out[3]  ? 1'b0 : 1'bZ;
-//assign USER_IO[4] = !(SW[1] ? HDMI_SCLK  : user_out[4]) ? 1'b0 : 1'bZ;
-//assign USER_IO[5] = !(SW[1] ? HDMI_LRCLK : user_out[5]) ? 1'b0 : 1'bZ;
-//assign USER_IO[6] =                       !user_out[6]  ? 1'b0 : 1'bZ;
+assign USER_IO[0] =                       !user_out[0]  ? 1'b0 : 1'bZ;
+assign USER_IO[1] =                       !user_out[1]  ? 1'b0 : 1'bZ;
+assign USER_IO[2] = !(SW[1] ? HDMI_I2S   : user_out[2]) ? 1'b0 : 1'bZ;
+assign USER_IO[3] =                       !user_out[3]  ? 1'b0 : 1'bZ;
+assign USER_IO[4] = !(SW[1] ? HDMI_SCLK  : user_out[4]) ? 1'b0 : 1'bZ;
+assign USER_IO[5] = !(SW[1] ? HDMI_LRCLK : user_out[5]) ? 1'b0 : 1'bZ;
+assign USER_IO[6] =                       !user_out[6]  ? 1'b0 : 1'bZ;
 
-//assign user_in[0] =         USER_IO[0];
-//assign user_in[1] =         USER_IO[1];
-//assign user_in[2] = SW[1] | USER_IO[2];
-//assign user_in[3] =         USER_IO[3];
-//assign user_in[4] = SW[1] | USER_IO[4];
-//assign user_in[5] = SW[1] | USER_IO[5];
-//assign user_in[6] =         USER_IO[6];
+assign user_in[0] =         USER_IO[0];
+assign user_in[1] =         USER_IO[1];
+assign user_in[2] = SW[1] | USER_IO[2];
+assign user_in[3] =         USER_IO[3];
+assign user_in[4] = SW[1] | USER_IO[4];
+assign user_in[5] = SW[1] | USER_IO[5];
+assign user_in[6] =         USER_IO[6];
 
 
 ///////////////////  User module connection ////////////////////////////
