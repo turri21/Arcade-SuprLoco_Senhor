@@ -1,7 +1,8 @@
 =(SuperLocomotive_Senhor notes)=-
 
-Tested: Working Video 720p, 1080p & Sound
+Tested: Working Video 720p, 1080p & Sound.
 
+___
 # Super Locomotive arcade core
 
 Core developed by [ika-musume](https://github.com/ika-musume) aka [Raki](https://www.patreon.com/ikamusume)
